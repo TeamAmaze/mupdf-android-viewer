@@ -60,6 +60,7 @@ project.afterEvaluate {
 				}
 			}
 			mavenLocal()
+			maven { url "https://jitpack.io" }
 		}
 	}
 }
