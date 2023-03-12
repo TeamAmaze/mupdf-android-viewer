@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:keepScreenOn="true"
@@ -124,42 +125,86 @@
 
 	</ViewAnimator>
 
-	<RelativeLayout
-		android:id="@+id/lowerButtons"
-		android:layout_width="match_parent"
+	<LinearLayout
+		android:id="@+id/hints_parent"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:gravity="center_horizontal|center_vertical"
+		android:orientation="horizontal"
+		android:background="@drawable/background_curved_dark_2"
+		android:padding="@dimen/eight_dp"
+		android:layout_marginBottom="@dimen/material_generic_large"
 		android:layout_alignParentBottom="true"
 		android:layout_centerHorizontal="true"
 		>
-
-		<SeekBar
-			android:id="@+id/pageSlider"
-			android:layout_width="match_parent"
-			android:layout_height="36dp"
-			android:layout_alignParentBottom="true"
-			android:layout_centerHorizontal="true"
-			android:layout_margin="0dp"
-			android:paddingLeft="16dp"
-			android:paddingRight="16dp"
-			android:paddingTop="12dp"
-			android:paddingBottom="8dp"
-			android:background="@color/toolbar"
-			android:thumb="@drawable/seek_thumb"
-			android:progressDrawable="@drawable/seek_line"
-			/>
-
 		<TextView
-			android:id="@+id/pageNumber"
+			android:id="@+id/page_number"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_above="@+id/pageSlider"
-			android:layout_centerHorizontal="true"
-			android:layout_marginBottom="16dp"
-			android:background="@drawable/page_indicator"
-			android:textSize="16sp"
-			android:textColor="@android:color/white"
+			android:gravity="center_vertical"
 			/>
+		<View
+			android:layout_width="1dp"
+			android:layout_height="match_parent"
+			android:background="@color/white"
+			android:layout_marginLeft="@dimen/eight_dp"
+			android:layout_marginStart="@dimen/eight_dp"
+			android:layout_marginEnd="@dimen/four_dp"
+			android:layout_marginRight="@dimen/four_dp"
+			/>
+		<ImageView
+			android:id="@+id/switch_view"
+			android:src="@drawable/ic_outline_dark_mode_32"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:visibility="visible"
+			/>
+		<View
+			android:layout_width="1dp"
+			android:layout_height="match_parent"
+			android:background="@color/white"
+			android:layout_marginLeft="@dimen/eight_dp"
+			android:layout_marginStart="@dimen/eight_dp"
+			android:layout_marginEnd="@dimen/four_dp"
+			android:layout_marginRight="@dimen/four_dp"
+			/>
+		<ImageView
+			android:id="@+id/pin_view"
+			android:src="@drawable/ic_baseline_push_pin_24"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:visibility="visible"
+			/>
+	</LinearLayout>
 
-	</RelativeLayout>
+	<SeekBar
+		android:id="@+id/pageSlider"
+		android:layout_width="@dimen/two_forty"
+		android:layout_height="wrap_content"
+		android:layout_alignParentEnd="true"
+		android:layout_centerVertical="true"
+		android:padding="@dimen/material_generic"
+		android:background="@drawable/background_curved_dark_2"
+		android:thumb="@drawable/seek_thumb"
+		android:progressDrawable="@drawable/seek_line"
+		android:rotation="90"
+		android:layout_marginStart="@dimen/eight_dp"
+		android:layout_marginEnd="-50dp"
+		/>
+
+	<!--<SeekBar
+		android:id="@+id/pageSliderHorizontal"
+		android:layout_width="@dimen/two_forty"
+		android:layout_height="wrap_content"
+		android:layout_alignParentEnd="true"
+		android:layout_centerHorizontal="true"
+		android:padding="@dimen/material_generic"
+		android:background="@drawable/background_curved_dark_2"
+		android:thumb="@drawable/seek_thumb"
+		android:progressDrawable="@drawable/seek_line"
+		android:layout_marginStart="@dimen/material_generic"
+		android:layout_marginEnd="@dimen/material_generic"
+		android:layout_marginBottom="@dimen/material_generic"
+		/>-->
 
 </RelativeLayout>

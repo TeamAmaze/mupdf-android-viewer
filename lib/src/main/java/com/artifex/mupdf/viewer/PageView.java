@@ -17,6 +17,8 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -92,6 +94,7 @@ public class PageView extends ViewGroup {
 
 	private       ProgressBar mBusyIndicator;
 	private final Handler   mHandler = new Handler();
+	private boolean isDarkMode = false;
 
 	public PageView(Context c, MuPDFCore core, Point parentSize, Bitmap sharedHqBm) {
 		super(c);
@@ -252,6 +255,19 @@ public class PageView extends ViewGroup {
 		if (mEntire == null) {
 			mEntire = new OpaqueImageView(mContext);
 			mEntire.setScaleType(ImageView.ScaleType.MATRIX);
+			if (isDarkMode) {
+				ColorMatrix colorMatrixInverted =
+						new ColorMatrix(new float[]{
+								-1, 0, 0, 0, 255,
+								0, -1, 0, 0, 255,
+								0, 0, -1, 0, 255,
+								0, 0, 0, 1, 0});
+
+				ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrixInverted);
+				mEntire.setColorFilter(filter);
+			} else {
+				mEntire.setColorFilter(null);
+			}
 			addView(mEntire);
 		}
 
@@ -510,6 +526,19 @@ public class PageView extends ViewGroup {
 						mPatchArea = patchArea;
 						clearRenderError();
 						mPatch.setImageBitmap(mPatchBm);
+						if (isDarkMode) {
+							ColorMatrix colorMatrixInverted =
+									new ColorMatrix(new float[]{
+											-1, 0, 0, 0, 255,
+											0, -1, 0, 0, 255,
+											0, 0, -1, 0, 255,
+											0, 0, 0, 1, 0});
+
+							ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrixInverted);
+							mPatch.setColorFilter(filter);
+						} else {
+							mPatch.setColorFilter(null);
+						}
 						mPatch.invalidate();
 						//requestLayout();
 						// Calling requestLayout here doesn't lead to a later call to layout. No idea
@@ -579,6 +608,14 @@ public class PageView extends ViewGroup {
 	@Override
 	public boolean isOpaque() {
 		return true;
+	}
+
+	public void setDarkMode(boolean darkMode) {
+		isDarkMode = darkMode;
+	}
+
+	public boolean isDarkModeEnabled() {
+		return isDarkMode;
 	}
 
 	public int hitLink(Link link) {

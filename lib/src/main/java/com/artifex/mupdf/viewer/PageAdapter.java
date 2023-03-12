@@ -2,6 +2,9 @@ package com.artifex.mupdf.viewer;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.SparseArray;
@@ -15,6 +18,7 @@ public class PageAdapter extends BaseAdapter {
 	private final MuPDFCore mCore;
 	private final SparseArray<PointF> mPageSizes = new SparseArray<PointF>();
 	private       Bitmap mSharedHqBm;
+	private boolean isDarkMode = false;
 
 	public PageAdapter(Context c, MuPDFCore core) {
 		mContext = c;
@@ -64,6 +68,7 @@ public class PageAdapter extends BaseAdapter {
 		} else {
 			pageView = (PageView) convertView;
 		}
+		pageView.setDarkMode(isDarkMode);
 
 		PointF pageSize = mPageSizes.get(position);
 		if (pageSize != null) {
@@ -99,5 +104,14 @@ public class PageAdapter extends BaseAdapter {
 			sizingTask.execute((Void)null);
 		}
 		return pageView;
+	}
+
+	public boolean switchDarkMode() {
+		isDarkMode = !isDarkMode;
+		return isDarkMode;
+	}
+
+	public boolean isDarkModeEnabled() {
+		return isDarkMode;
 	}
 }

@@ -7,6 +7,9 @@ import java.util.NoSuchElementException;
 import java.util.Stack;
 
 import android.content.Context;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -384,6 +387,12 @@ public class ReaderView
 	public boolean onDown(MotionEvent arg0) {
 		mScroller.forceFinished(true);
 		return true;
+	}
+
+	public boolean switchDarkMode() {
+		boolean isDarkMode = mAdapter.switchDarkMode();
+		refresh();
+		return isDarkMode;
 	}
 
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
@@ -914,7 +923,7 @@ public class ReaderView
 			if (mLinksEnabled && pageView != null) {
 				int page = pageView.hitLink(e.getX(), e.getY());
 				if (page > 0) {
-					pushHistory();
+//					pushHistory();
 					setDisplayedViewIndex(page);
 				} else {
 					onTapMainDocArea();

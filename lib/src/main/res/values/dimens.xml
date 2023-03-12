@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="material_generic">16dp</dimen>
+    <dimen name="material_generic_medium">32dp</dimen>
+    <dimen name="material_generic_large">72dp</dimen>
+    <dimen name="eight_dp">8dp</dimen>
+    <dimen name="four_dp">4dp</dimen>
+    <dimen name="files_tab_heights">180dp</dimen>
+    <dimen name="two_forty">240dp</dimen>
+</resources>

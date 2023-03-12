@@ -2,4 +2,10 @@
 <resources>
 	<color name="page_indicator">#C0202020</color>
 	<color name="toolbar">#C0202020</color>
+	<color name="white_translucent_2">#30FFFFFF</color>
+	<color name="white">#FFFFFFFF</color>
+	<color name="highlight_yellow">#fbc33d</color>
+	<color name="highlight_yellow_trans">#33FFEB6B</color>
+	<color name="black_70">#70000000</color>
+
 </resources>

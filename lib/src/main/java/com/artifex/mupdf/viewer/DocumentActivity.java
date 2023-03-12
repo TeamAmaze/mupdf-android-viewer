@@ -1,23 +1,16 @@
 package com.artifex.mupdf.viewer;
 
-import com.artifex.mupdf.fitz.SeekableInputStream;
-
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,7 +22,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -39,18 +31,20 @@ import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
-import java.io.FileNotFoundException;
+import com.artifex.mupdf.fitz.SeekableInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -75,6 +69,9 @@ public class DocumentActivity extends Activity
 	private SeekBar      mPageSlider;
 	private int          mPageSliderRes;
 	private TextView     mPageNumberView;
+	private LinearLayout mHintsParentView;
+	private ImageView    mHintsSwitchView;
+	private ImageView    mHintsPinView;
 	private ImageButton  mSearchButton;
 	private ImageButton  mOutlineButton;
 	private ViewAnimator mTopBarSwitcher;
@@ -360,6 +357,7 @@ public class DocumentActivity extends Activity
 					return;
 
 				mPageNumberView.setText(String.format(Locale.ROOT, "%d / %d", i + 1, core.countPages()));
+
 				mPageSlider.setMax((core.countPages() - 1) * mPageSliderRes);
 				mPageSlider.setProgress(i * mPageSliderRes);
 				super.onMoveToChild(i);
@@ -423,7 +421,7 @@ public class DocumentActivity extends Activity
 		// Activate the seekbar
 		mPageSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				mDocView.pushHistory();
+//				mDocView.pushHistory();
 				mDocView.setDisplayedViewIndex((seekBar.getProgress()+mPageSliderRes/2)/mPageSliderRes);
 			}
 
@@ -570,7 +568,7 @@ public class DocumentActivity extends Activity
 			searchModeOn();
 
 		// Stick the document view and the buttons overlay into a parent view
-		RelativeLayout layout = new RelativeLayout(this);
+		FrameLayout layout = new FrameLayout(this);
 		layout.setBackgroundColor(Color.DKGRAY);
 		layout.addView(mDocView);
 		layout.addView(mButtonsView);
@@ -582,7 +580,7 @@ public class DocumentActivity extends Activity
 		switch (requestCode) {
 		case OUTLINE_REQUEST:
 			if (resultCode >= RESULT_FIRST_USER && mDocView != null) {
-				mDocView.pushHistory();
+//				mDocView.pushHistory();
 				mDocView.setDisplayedViewIndex(resultCode-RESULT_FIRST_USER);
 			}
 			break;
@@ -692,7 +690,8 @@ public class DocumentActivity extends Activity
 				}
 				public void onAnimationRepeat(Animation animation) {}
 				public void onAnimationEnd(Animation animation) {
-					mPageNumberView.setVisibility(View.VISIBLE);
+//					mPageNumberView.setVisibility(View.VISIBLE);
+					mHintsParentView.setVisibility(View.VISIBLE);
 				}
 			});
 			mPageSlider.startAnimation(anim);
@@ -719,7 +718,8 @@ public class DocumentActivity extends Activity
 			anim.setDuration(200);
 			anim.setAnimationListener(new Animation.AnimationListener() {
 				public void onAnimationStart(Animation animation) {
-					mPageNumberView.setVisibility(View.INVISIBLE);
+//					mPageNumberView.setVisibility(View.INVISIBLE);
+					mHintsParentView.setVisibility(View.INVISIBLE);
 				}
 				public void onAnimationRepeat(Animation animation) {}
 				public void onAnimationEnd(Animation animation) {
@@ -762,7 +762,10 @@ public class DocumentActivity extends Activity
 		mButtonsView = getLayoutInflater().inflate(R.layout.document_activity, null);
 		mDocNameView = (TextView)mButtonsView.findViewById(R.id.docNameText);
 		mPageSlider = (SeekBar)mButtonsView.findViewById(R.id.pageSlider);
-		mPageNumberView = (TextView)mButtonsView.findViewById(R.id.pageNumber);
+		mHintsParentView = mButtonsView.findViewById(R.id.hints_parent);
+		mPageNumberView = mHintsParentView.findViewById(R.id.page_number);
+		mHintsSwitchView = mHintsParentView.findViewById(R.id.switch_view);
+		mHintsPinView = mHintsParentView.findViewById(R.id.pin_view);
 		mSearchButton = (ImageButton)mButtonsView.findViewById(R.id.searchButton);
 		mOutlineButton = (ImageButton)mButtonsView.findViewById(R.id.outlineButton);
 		mTopBarSwitcher = (ViewAnimator)mButtonsView.findViewById(R.id.switcher);
@@ -773,9 +776,41 @@ public class DocumentActivity extends Activity
 		mLinkButton = (ImageButton)mButtonsView.findViewById(R.id.linkButton);
 		mLayoutButton = mButtonsView.findViewById(R.id.layoutButton);
 		mTopBarSwitcher.setVisibility(View.INVISIBLE);
-		mPageNumberView.setVisibility(View.INVISIBLE);
+//		mPageNumberView.setVisibility(View.INVISIBLE);
+		mHintsParentView.setVisibility(View.INVISIBLE);
 
 		mPageSlider.setVisibility(View.INVISIBLE);
+		mHintsSwitchView.setOnClickListener(v -> {
+			if (mDocKey != null && mDocView != null) {
+				boolean isDarkMode = mDocView.switchDarkMode();
+				if (isDarkMode) {
+					mHintsSwitchView.setImageDrawable(ResourcesCompat.getDrawable(
+							getResources(),
+							R.drawable.ic_outline_light_mode_32, getTheme()
+					));
+					mHintsParentView.setBackground(ResourcesCompat.getDrawable(
+							getResources(),
+							R.drawable.button_curved_unselected, getTheme()
+					));
+				} else {
+					mHintsSwitchView.setImageDrawable(ResourcesCompat.getDrawable(
+							getResources(),
+							R.drawable.ic_outline_dark_mode_32, getTheme()
+					));
+					mHintsParentView.setBackground(ResourcesCompat.getDrawable(
+							getResources(),
+							R.drawable.background_curved_dark_2, getTheme()
+					));
+				}
+			}
+		});
+		mHintsPinView.setOnClickListener(v -> {
+			if (mDocKey != null && mDocView != null) {
+				mDocView.pushHistory();
+				Toast.makeText(this, getString(R.string.page_pinned),
+						Toast.LENGTH_LONG).show();
+			}
+		});
 	}
 
 	private void showKeyboard() {
