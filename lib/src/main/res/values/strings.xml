@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="document_activity">Amaze Document Viewer</string>
 	<string name="cancel">Cancel</string>
 	<string name="cannot_open_document">Cannot open document</string>
 	<string name="cannot_open_document_Reason">Cannot open document: %1$s</string>
@@ -12,4 +13,19 @@
 	<string name="searching_">Searching&#x2026;</string>
 	<string name="text_not_found">Text not found</string>
 	<string name="page_pinned">Page pinned</string>
+	<string name="information">Information</string>
+	<string name="outline">Outline</string>
+	<string name="text_size">Text Size</string>
+	<string name="hightlight_links">Highlight links</string>
+	<string name="close">Close</string>
+	<string name="not_found">Not found</string>
+	<string name="info_summary">%s: %s</string>
+	<string name="title">Title</string>
+	<string name="author">Author</string>
+	<string name="subject">Subject</string>
+	<string name="creator">Creator</string>
+	<string name="producer">Producer</string>
+	<string name="creation_date">Creation Date</string>
+	<string name="modified_date">Modified Date</string>
+	<string name="keywords">Keywords</string>
 </resources>

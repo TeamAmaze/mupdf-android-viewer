@@ -20,14 +20,14 @@ import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -35,15 +35,17 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.artifex.mupdf.fitz.SeekableInputStream;
+import com.google.android.material.slider.Slider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,16 +68,17 @@ public class DocumentActivity extends Activity
 	private boolean      mButtonsVisible;
 	private EditText     mPasswordView;
 	private TextView     mDocNameView;
-	private SeekBar      mPageSlider;
+	private Slider      mPageSlider;
 	private int          mPageSliderRes;
 	private TextView     mPageNumberView;
 	private LinearLayout mHintsParentView;
 	private ImageView    mHintsSwitchView;
 	private ImageView    mHintsPinView;
 	private ImageButton  mSearchButton;
-	private ImageButton  mOutlineButton;
+//	private ImageButton  mOutlineButton;
 	private ViewAnimator mTopBarSwitcher;
-	private ImageButton  mLinkButton;
+	private ImageView	 mBackButton;
+	private ImageView	 mOverflowButton;
 	private TopBarMode   mTopBarMode = TopBarMode.Main;
 	private ImageButton  mSearchBack;
 	private ImageButton  mSearchFwd;
@@ -94,9 +97,6 @@ public class DocumentActivity extends Activity
 	private int mLayoutEM = 10;
 	private int mLayoutW = 312;
 	private int mLayoutH = 504;
-
-	protected View mLayoutButton;
-	protected PopupMenu mLayoutPopupMenu;
 
 	private String toHex(byte[] digest) {
 		StringBuilder builder = new StringBuilder(2 * digest.length);
@@ -201,7 +201,7 @@ public class DocumentActivity extends Activity
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		mDisplayDPI = (int)metrics.densityDpi;
 
-		mAlertBuilder = new AlertDialog.Builder(this);
+		mAlertBuilder = new AlertDialog.Builder(this, R.style.Custom_Dialog_Dark);
 
 		if (core == null) {
 			if (savedInstanceState != null && savedInstanceState.containsKey("DocTitle")) {
@@ -358,8 +358,11 @@ public class DocumentActivity extends Activity
 
 				mPageNumberView.setText(String.format(Locale.ROOT, "%d / %d", i + 1, core.countPages()));
 
-				mPageSlider.setMax((core.countPages() - 1) * mPageSliderRes);
-				mPageSlider.setProgress(i * mPageSliderRes);
+//				mPageSlider.setMax((core.countPages() - 1) * mPageSliderRes);
+				int valueTo = (core.countPages() - 1) * mPageSliderRes;
+				mPageSlider.setValueTo(valueTo > 0 ? valueTo : 1);
+//				mPageSlider.setProgress(i * mPageSliderRes);
+				mPageSlider.setValue(i * mPageSliderRes);
 				super.onMoveToChild(i);
 			}
 
@@ -413,38 +416,34 @@ public class DocumentActivity extends Activity
 
 		// Set the file-name text
 		String docTitle = core.getTitle();
-		if (docTitle != null)
+		if (docTitle != null) {
 			mDocNameView.setText(docTitle);
-		else
+			mDocTitle = docTitle;
+		}
+		else {
 			mDocNameView.setText(mDocTitle);
+		}
 
 		// Activate the seekbar
-		mPageSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-			public void onStopTrackingTouch(SeekBar seekBar) {
-//				mDocView.pushHistory();
-				mDocView.setDisplayedViewIndex((seekBar.getProgress()+mPageSliderRes/2)/mPageSliderRes);
+		mPageSlider.setStepSize(1);
+		mPageSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+			@Override
+			public void onStartTrackingTouch(@NonNull Slider slider) {
 			}
 
-			public void onStartTrackingTouch(SeekBar seekBar) {}
-
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
-				updatePageNumView((progress+mPageSliderRes/2)/mPageSliderRes);
+			@Override
+			public void onStopTrackingTouch(@NonNull Slider slider) {
+				mPageSlider.setLabelFormatter(value -> "");
+				mDocView.setDisplayedViewIndex((int)(slider.getValue()+mPageSliderRes/2)/mPageSliderRes);
 			}
 		});
+		mPageSlider.addOnChangeListener((slider, value, fromUser) ->
+				updatePageNumView((int)(value+mPageSliderRes/2)/mPageSliderRes));
 
 		// Activate the search-preparing button
-		mSearchButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				searchModeOn();
-			}
-		});
+		mSearchButton.setOnClickListener(v -> searchModeOn());
 
-		mSearchClose.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				searchModeOff();
-			}
-		});
+		mSearchClose.setOnClickListener(v -> searchModeOff());
 
 		// Search invoking buttons are disabled while there is no text specified
 		mSearchBack.setEnabled(false);
@@ -473,72 +472,23 @@ public class DocumentActivity extends Activity
 		});
 
 		//React to Done button on keyboard
-		mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_DONE)
-					search(1);
-				return false;
-			}
+		mSearchText.setOnEditorActionListener((v, actionId, event) -> {
+			if (actionId == EditorInfo.IME_ACTION_DONE)
+				search(1);
+			return false;
 		});
 
-		mSearchText.setOnKeyListener(new View.OnKeyListener() {
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER)
-					search(1);
-				return false;
-			}
+		mSearchText.setOnKeyListener((v, keyCode, event) -> {
+			if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER)
+				search(1);
+			return false;
 		});
 
 		// Activate search invoking buttons
-		mSearchBack.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				search(-1);
-			}
-		});
-		mSearchFwd.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				search(1);
-			}
-		});
+		mSearchBack.setOnClickListener(v -> search(-1));
+		mSearchFwd.setOnClickListener(v -> search(1));
 
-		mLinkButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				setLinkHighlight(!mLinkHighlight);
-			}
-		});
-
-		if (core.isReflowable()) {
-			mLayoutButton.setVisibility(View.VISIBLE);
-			mLayoutPopupMenu = new PopupMenu(this, mLayoutButton);
-			mLayoutPopupMenu.getMenuInflater().inflate(R.menu.layout_menu, mLayoutPopupMenu.getMenu());
-			mLayoutPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-				public boolean onMenuItemClick(MenuItem item) {
-					float oldLayoutEM = mLayoutEM;
-					int id = item.getItemId();
-					if (id == R.id.action_layout_6pt) mLayoutEM = 6;
-					else if (id == R.id.action_layout_7pt) mLayoutEM = 7;
-					else if (id == R.id.action_layout_8pt) mLayoutEM = 8;
-					else if (id == R.id.action_layout_9pt) mLayoutEM = 9;
-					else if (id == R.id.action_layout_10pt) mLayoutEM = 10;
-					else if (id == R.id.action_layout_11pt) mLayoutEM = 11;
-					else if (id == R.id.action_layout_12pt) mLayoutEM = 12;
-					else if (id == R.id.action_layout_13pt) mLayoutEM = 13;
-					else if (id == R.id.action_layout_14pt) mLayoutEM = 14;
-					else if (id == R.id.action_layout_15pt) mLayoutEM = 15;
-					else if (id == R.id.action_layout_16pt) mLayoutEM = 16;
-					if (oldLayoutEM != mLayoutEM)
-						relayoutDocument();
-					return true;
-				}
-			});
-			mLayoutButton.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					mLayoutPopupMenu.show();
-				}
-			});
-		}
-
-		if (core.hasOutline()) {
+		/*if (core.hasOutline()) {
 			mOutlineButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					if (mFlatOutline == null)
@@ -555,7 +505,7 @@ public class DocumentActivity extends Activity
 			});
 		} else {
 			mOutlineButton.setVisibility(View.GONE);
-		}
+		}*/
 
 		// Reenstate last state if it was recorded
 		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
@@ -569,7 +519,7 @@ public class DocumentActivity extends Activity
 
 		// Stick the document view and the buttons overlay into a parent view
 		FrameLayout layout = new FrameLayout(this);
-		layout.setBackgroundColor(Color.DKGRAY);
+		layout.setBackgroundColor(getResources().getColor(R.color.navy_blue));
 		layout.addView(mDocView);
 		layout.addView(mButtonsView);
 		setContentView(layout);
@@ -651,7 +601,6 @@ public class DocumentActivity extends Activity
 	private void setLinkHighlight(boolean highlight) {
 		mLinkHighlight = highlight;
 		// LINK_COLOR tint
-		mLinkButton.setColorFilter(highlight ? Color.argb(0xFF, 0x00, 0x66, 0xCC) : Color.argb(0xFF, 255, 255, 255));
 		// Inform pages of the change.
 		mDocView.setLinksEnabled(highlight);
 	}
@@ -664,14 +613,17 @@ public class DocumentActivity extends Activity
 			// Update page number text and slider
 			int index = mDocView.getDisplayedViewIndex();
 			updatePageNumView(index);
-			mPageSlider.setMax((core.countPages()-1)*mPageSliderRes);
-			mPageSlider.setProgress(index * mPageSliderRes);
+//			mPageSlider.setMax((core.countPages()-1)*mPageSliderRes);
+//			mPageSlider.setProgress(index * mPageSliderRes);
+			int valueTo = (core.countPages()-1)*mPageSliderRes;
+			mPageSlider.setValueTo(valueTo > 0 ? valueTo : 1);
+			mPageSlider.setValue(index * mPageSliderRes);
 			if (mTopBarMode == TopBarMode.Search) {
 				mSearchText.requestFocus();
 				showKeyboard();
 			}
 
-			Animation anim = new TranslateAnimation(0, 0, -mTopBarSwitcher.getHeight(), 0);
+			Animation anim = new AlphaAnimation(0, 1);
 			anim.setDuration(200);
 			anim.setAnimationListener(new Animation.AnimationListener() {
 				public void onAnimationStart(Animation animation) {
@@ -681,20 +633,35 @@ public class DocumentActivity extends Activity
 				public void onAnimationEnd(Animation animation) {}
 			});
 			mTopBarSwitcher.startAnimation(anim);
-
-			anim = new TranslateAnimation(0, 0, mPageSlider.getHeight(), 0);
-			anim.setDuration(200);
-			anim.setAnimationListener(new Animation.AnimationListener() {
+			Animation anim2 = new AlphaAnimation(0, 1);
+			anim2.setDuration(200);
+			anim2.setAnimationListener(new Animation.AnimationListener() {
 				public void onAnimationStart(Animation animation) {
-					mPageSlider.setVisibility(View.VISIBLE);
+					mPageSlider.setVisibility(View.INVISIBLE);
 				}
 				public void onAnimationRepeat(Animation animation) {}
 				public void onAnimationEnd(Animation animation) {
 //					mPageNumberView.setVisibility(View.VISIBLE);
+					if (core.countPages() > 1) {
+						mPageSlider.setVisibility(View.VISIBLE);
+					}
+				}
+			});
+			Animation anim3 = new AlphaAnimation(0, 1);
+			anim3.setDuration(200);
+			anim3.setAnimationListener(new Animation.AnimationListener() {
+				public void onAnimationStart(Animation animation) {
+					mHintsParentView.setVisibility(View.INVISIBLE);
+				}
+				public void onAnimationRepeat(Animation animation) {}
+				public void onAnimationEnd(Animation animation) {
 					mHintsParentView.setVisibility(View.VISIBLE);
 				}
 			});
-			mPageSlider.startAnimation(anim);
+			if (core.countPages() > 1) {
+				mPageSlider.startAnimation(anim2);
+			}
+			mHintsParentView.startAnimation(anim3);
 		}
 	}
 
@@ -703,10 +670,12 @@ public class DocumentActivity extends Activity
 			mButtonsVisible = false;
 			hideKeyboard();
 
-			Animation anim = new TranslateAnimation(0, 0, 0, -mTopBarSwitcher.getHeight());
+			Animation anim = new AlphaAnimation(1, 0);
 			anim.setDuration(200);
 			anim.setAnimationListener(new Animation.AnimationListener() {
-				public void onAnimationStart(Animation animation) {}
+				public void onAnimationStart(Animation animation) {
+					mTopBarSwitcher.setVisibility(View.VISIBLE);
+				}
 				public void onAnimationRepeat(Animation animation) {}
 				public void onAnimationEnd(Animation animation) {
 					mTopBarSwitcher.setVisibility(View.INVISIBLE);
@@ -714,19 +683,35 @@ public class DocumentActivity extends Activity
 			});
 			mTopBarSwitcher.startAnimation(anim);
 
-			anim = new TranslateAnimation(0, 0, 0, mPageSlider.getHeight());
-			anim.setDuration(200);
-			anim.setAnimationListener(new Animation.AnimationListener() {
+			Animation anim2 = new AlphaAnimation(1, 0);
+			anim2.setDuration(200);
+			anim2.setAnimationListener(new Animation.AnimationListener() {
 				public void onAnimationStart(Animation animation) {
-//					mPageNumberView.setVisibility(View.INVISIBLE);
-					mHintsParentView.setVisibility(View.INVISIBLE);
+					if (core.countPages() > 1) {
+						mPageSlider.setVisibility(View.VISIBLE);
+					}
 				}
 				public void onAnimationRepeat(Animation animation) {}
 				public void onAnimationEnd(Animation animation) {
 					mPageSlider.setVisibility(View.INVISIBLE);
 				}
 			});
-			mPageSlider.startAnimation(anim);
+			Animation anim3 = new AlphaAnimation(1, 0);
+			anim3.setDuration(200);
+			anim3.setAnimationListener(new Animation.AnimationListener() {
+				public void onAnimationStart(Animation animation) {
+//					mPageNumberView.setVisibility(View.INVISIBLE);
+					mHintsParentView.setVisibility(View.VISIBLE);
+				}
+				public void onAnimationRepeat(Animation animation) {}
+				public void onAnimationEnd(Animation animation) {
+					mHintsParentView.setVisibility(View.INVISIBLE);
+				}
+			});
+			if (core.countPages() > 1) {
+				mPageSlider.startAnimation(anim2);
+			}
+			mHintsParentView.startAnimation(anim3);
 		}
 	}
 
@@ -756,25 +741,26 @@ public class DocumentActivity extends Activity
 		if (core == null)
 			return;
 		mPageNumberView.setText(String.format(Locale.ROOT, "%d / %d", index + 1, core.countPages()));
+		mPageSlider.setLabelFormatter(value -> index + 1 + "");
 	}
 
 	private void makeButtonsView() {
 		mButtonsView = getLayoutInflater().inflate(R.layout.document_activity, null);
 		mDocNameView = (TextView)mButtonsView.findViewById(R.id.docNameText);
-		mPageSlider = (SeekBar)mButtonsView.findViewById(R.id.pageSlider);
+		mPageSlider = (Slider)mButtonsView.findViewById(R.id.pageSlider);
 		mHintsParentView = mButtonsView.findViewById(R.id.hints_parent);
 		mPageNumberView = mHintsParentView.findViewById(R.id.page_number);
 		mHintsSwitchView = mHintsParentView.findViewById(R.id.switch_view);
 		mHintsPinView = mHintsParentView.findViewById(R.id.pin_view);
 		mSearchButton = (ImageButton)mButtonsView.findViewById(R.id.searchButton);
-		mOutlineButton = (ImageButton)mButtonsView.findViewById(R.id.outlineButton);
+//		mOutlineButton = (ImageButton)mButtonsView.findViewById(R.id.outlineButton);
 		mTopBarSwitcher = (ViewAnimator)mButtonsView.findViewById(R.id.switcher);
 		mSearchBack = (ImageButton)mButtonsView.findViewById(R.id.searchBack);
 		mSearchFwd = (ImageButton)mButtonsView.findViewById(R.id.searchForward);
 		mSearchClose = (ImageButton)mButtonsView.findViewById(R.id.searchClose);
 		mSearchText = (EditText)mButtonsView.findViewById(R.id.searchText);
-		mLinkButton = (ImageButton)mButtonsView.findViewById(R.id.linkButton);
-		mLayoutButton = mButtonsView.findViewById(R.id.layoutButton);
+		mBackButton = (ImageView) mButtonsView.findViewById(R.id.back_button);
+		mOverflowButton = (ImageView) mButtonsView.findViewById(R.id.overflow_button);
 		mTopBarSwitcher.setVisibility(View.INVISIBLE);
 //		mPageNumberView.setVisibility(View.INVISIBLE);
 		mHintsParentView.setVisibility(View.INVISIBLE);
@@ -811,6 +797,94 @@ public class DocumentActivity extends Activity
 						Toast.LENGTH_LONG).show();
 			}
 		});
+		mBackButton.setOnClickListener(v -> DocumentActivity.super.onBackPressed());
+		ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(DocumentActivity.this,
+				R.style.custom_action_mode_dark);
+
+		PopupMenu mLayoutPopupMenu = new PopupMenu(
+				contextThemeWrapper, mTopBarSwitcher, Gravity.END
+		);
+		mLayoutPopupMenu.inflate(R.menu.layout_menu);
+		mLayoutPopupMenu.setOnMenuItemClickListener(item -> {
+			float oldLayoutEM = mLayoutEM;
+			int id = item.getItemId();
+			if (id == R.id.action_layout_6pt) mLayoutEM = 6;
+			else if (id == R.id.action_layout_7pt) mLayoutEM = 7;
+			else if (id == R.id.action_layout_8pt) mLayoutEM = 8;
+			else if (id == R.id.action_layout_9pt) mLayoutEM = 9;
+			else if (id == R.id.action_layout_10pt) mLayoutEM = 10;
+			else if (id == R.id.action_layout_11pt) mLayoutEM = 11;
+			else if (id == R.id.action_layout_12pt) mLayoutEM = 12;
+			else if (id == R.id.action_layout_13pt) mLayoutEM = 13;
+			else if (id == R.id.action_layout_14pt) mLayoutEM = 14;
+			else if (id == R.id.action_layout_15pt) mLayoutEM = 15;
+			else if (id == R.id.action_layout_16pt) mLayoutEM = 16;
+			if (oldLayoutEM != mLayoutEM)
+				relayoutDocument();
+			return true;
+		});
+
+		PopupMenu popupMenu = new PopupMenu(
+				contextThemeWrapper, mTopBarSwitcher, Gravity.END
+		);
+		popupMenu.setOnMenuItemClickListener(item -> {
+			if (item.getItemId() == R.id.info) {
+				showInfoDialog();
+			} else if (item.getItemId() == R.id.outline) {
+				if (core.hasOutline()) {
+					if (mFlatOutline == null)
+						mFlatOutline = core.getOutline();
+					if (mFlatOutline != null) {
+						Intent intent = new Intent(DocumentActivity.this, OutlineActivity.class);
+						Bundle bundle = new Bundle();
+						bundle.putInt("POSITION", mDocView.getDisplayedViewIndex());
+						bundle.putSerializable("OUTLINE", mFlatOutline);
+						intent.putExtra("PALLETBUNDLE", Pallet.sendBundle(bundle));
+						startActivityForResult(intent, OUTLINE_REQUEST);
+					}
+				} else {
+					Toast.makeText(getBaseContext(),
+							getResources().getString(R.string.not_found),
+							Toast.LENGTH_LONG).show();
+				}
+			} else if (item.getItemId() == R.id.highlight_links) {
+				setLinkHighlight(!mLinkHighlight);
+				item.setChecked(mLinkHighlight);
+			} else if (item.getItemId() == R.id.text_size) {
+				mLayoutPopupMenu.show();
+			}
+			return true;
+		});
+		popupMenu.inflate(R.menu.overflow_menu);
+		if (core.isReflowable()) {
+			popupMenu.getMenu().findItem(R.id.text_size).setVisible(true);
+		}
+		mOverflowButton.setOnClickListener(v -> popupMenu.show());
+	}
+
+	private void showInfoDialog() {
+		String dialogMessage = "";
+		dialogMessage += String.format(getResources().getString(R.string.info_summary),
+				getResources().getString(R.string.title), mDocTitle) + "\n";
+		dialogMessage += String.format(getResources().getString(R.string.info_summary),
+				getResources().getString(R.string.author), core.getAuthor()) + "\n";
+		dialogMessage += String.format(getResources().getString(R.string.info_summary),
+				getResources().getString(R.string.subject), core.getSubject()) + "\n";
+		dialogMessage += String.format(getResources().getString(R.string.info_summary),
+				getResources().getString(R.string.creator), core.getCreator()) + "\n";
+		dialogMessage += String.format(getResources().getString(R.string.info_summary),
+				getResources().getString(R.string.producer), core.getProducer()) + "\n";
+		dialogMessage += String.format(getResources().getString(R.string.info_summary),
+				getResources().getString(R.string.keywords), core.getKeywords()) + "\n";
+		dialogMessage += String.format(getResources().getString(R.string.info_summary),
+				getResources().getString(R.string.creation_date), core.getCreationDate()) + "\n";
+		dialogMessage += String.format(getResources().getString(R.string.info_summary),
+				getResources().getString(R.string.modified_date), core.getModifiedDate()) + "\n";
+		AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Custom_Dialog_Dark);
+		builder.setMessage(dialogMessage)
+				.setTitle(R.string.information)
+				.setNegativeButton(getResources().getString(R.string.close),
+						(dialog, which) -> dialog.dismiss()).show();
 	}
 
 	private void showKeyboard() {

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/info"
+        android:title="@string/information"
+        />
+    <item
+        android:id="@+id/outline"
+        android:title="@string/outline"
+        />
+    <item
+        android:id="@+id/text_size"
+        android:title="@string/text_size"
+        android:visible="false"
+        />
+    <item
+        android:id="@+id/highlight_links"
+        android:title="@string/hightlight_links"
+        android:checkable="true"
+        android:checked="false"
+        />
+</menu>

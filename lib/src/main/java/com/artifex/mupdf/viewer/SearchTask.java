@@ -39,7 +39,7 @@ public abstract class SearchTask {
 		mContext = context;
 		mCore = core;
 		mHandler = new Handler();
-		mAlertBuilder = new AlertDialog.Builder(context);
+		mAlertBuilder = new AlertDialog.Builder(context, R.style.Custom_Dialog_Dark);
 	}
 
 	protected abstract void onTextFound(SearchTaskResult result);

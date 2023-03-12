@@ -7,7 +7,7 @@ version = '1.21.0a'
 dependencies {
 	implementation 'androidx.appcompat:appcompat:1.3.1'
 	implementation 'com.google.android.material:material:1.6.1'
-	if (file('../jni/build.gradle').isFile())
+    if (file('../jni/build.gradle').isFile())
 		api project(':jni')
 	else
 		api 'com.artifex.mupdf:fitz:1.21.0'

@@ -56,6 +56,34 @@ public class MuPDFCore
 		return doc.getMetaData(Document.META_INFO_TITLE);
 	}
 
+	public String getAuthor() {
+		return doc.getMetaData(Document.META_INFO_AUTHOR);
+	}
+
+	public String getSubject() {
+		return doc.getMetaData(Document.META_INFO_SUBJECT);
+	}
+
+	public String getCreator() {
+		return doc.getMetaData(Document.META_INFO_CREATOR);
+	}
+
+	public String getProducer() {
+		return doc.getMetaData(Document.META_INFO_PRODUCER);
+	}
+
+	public String getCreationDate() {
+		return doc.getMetaData(Document.META_INFO_CREATIONDATE);
+	}
+
+	public String getModifiedDate() {
+		return doc.getMetaData(Document.META_INFO_MODIFICATIONDATE);
+	}
+
+	public String getKeywords() {
+		return doc.getMetaData(Document.META_INFO_KEYWORDS);
+	}
+
 	public int countPages() {
 		return pageCount;
 	}

@@ -7,4 +7,5 @@
     <dimen name="four_dp">4dp</dimen>
     <dimen name="files_tab_heights">180dp</dimen>
     <dimen name="two_forty">240dp</dimen>
+    <dimen name="twenty_four_dp">24dp</dimen>
 </resources>

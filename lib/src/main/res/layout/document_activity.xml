@@ -10,18 +10,25 @@
 	<ViewAnimator
 		android:id="@+id/switcher"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="?actionBarSize"
 		android:layout_alignParentTop="true"
-		android:layout_centerHorizontal="true"
 		>
 
 		<LinearLayout
 			android:id="@+id/mainBar"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_height="?actionBarSize"
 			android:orientation="horizontal"
-			android:background="@color/toolbar"
+			android:layout_gravity="center_vertical"
+			android:background="@color/translucent_toolbar"
 			>
+			<ImageView
+				android:id="@+id/back_button"
+				android:src="@drawable/ic_baseline_arrow_back_32"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:layout_marginStart="@dimen/material_generic"
+				/>
 
 			<TextView
 				android:id="@+id/docNameText"
@@ -29,45 +36,30 @@
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
 				android:layout_gravity="center"
-				android:paddingLeft="16dp"
-				android:paddingRight="8dp"
+				android:layout_marginStart="@dimen/material_generic"
+				android:layout_marginEnd="@dimen/material_generic"
 				android:singleLine="true"
 				android:ellipsize="end"
-				android:textSize="16sp"
+				android:textSize="18sp"
 				android:textColor="@android:color/white"
-				/>
-
-			<ImageButton
-				android:id="@+id/linkButton"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:background="@drawable/button"
-				android:src="@drawable/ic_link_white_24dp"
+				android:textStyle="bold"
 				/>
 
 			<ImageButton
 				android:id="@+id/searchButton"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
+				android:layout_height="match_parent"
 				android:background="@drawable/button"
 				android:src="@drawable/ic_search_white_24dp"
+				android:layout_marginEnd="@dimen/material_generic"
 				/>
 
-			<ImageButton
-				android:id="@+id/layoutButton"
+			<ImageView
+				android:id="@+id/overflow_button"
+				android:src="@drawable/ic_baseline_more_vert_32"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:background="@drawable/button"
-				android:src="@drawable/ic_format_size_white_24dp"
-				android:visibility="gone"
-				/>
-
-			<ImageButton
-				android:id="@+id/outlineButton"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:background="@drawable/button"
-				android:src="@drawable/ic_toc_white_24dp"
+				android:layout_height="match_parent"
+				android:layout_marginEnd="@dimen/material_generic"
 				/>
 
 		</LinearLayout>
@@ -75,15 +67,16 @@
 		<LinearLayout
 			android:id="@+id/searchBar"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_height="?actionBarSize"
 			android:orientation="horizontal"
 			android:background="@color/toolbar"
+			android:layout_gravity="center_vertical"
 			>
 
 			<ImageButton
 				android:id="@+id/searchClose"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
+				android:layout_height="match_parent"
 				android:background="@drawable/button"
 				android:src="@drawable/ic_close_white_24dp"
 				/>
@@ -108,7 +101,7 @@
 			<ImageButton
 				android:id="@+id/searchBack"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
+				android:layout_height="match_parent"
 				android:background="@drawable/button"
 				android:src="@drawable/ic_chevron_left_white_24dp"
 				/>
@@ -116,7 +109,7 @@
 			<ImageButton
 				android:id="@+id/searchForward"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
+				android:layout_height="match_parent"
 				android:background="@drawable/button"
 				android:src="@drawable/ic_chevron_right_white_24dp"
 				/>
@@ -142,6 +135,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:gravity="center_vertical"
+			android:textColor="@color/white"
 			/>
 		<View
 			android:layout_width="1dp"
@@ -176,8 +170,29 @@
 			android:visibility="visible"
 			/>
 	</LinearLayout>
+	<com.google.android.material.slider.Slider
+		android:id="@+id/pageSlider"
+		android:layout_width="@dimen/two_forty"
+		android:layout_height="wrap_content"
+		android:layout_alignParentEnd="true"
+		android:layout_centerVertical="true"
+		android:paddingStart="@dimen/material_generic"
+		android:paddingEnd="@dimen/material_generic"
+		android:paddingTop="@dimen/material_generic_medium"
+		android:paddingBottom="@dimen/material_generic_medium"
+		android:background="@drawable/background_curved_dark_2"
+		android:rotation="90"
+		android:layout_marginStart="@dimen/eight_dp"
+		android:layout_marginEnd="-70dp"
+		android:tooltipText="@null"
+		app:labelStyle="@style/Widget.App.Tooltip"
+		app:trackColor="@color/highlight_yellow"
+		app:thumbColor="@color/highlight_yellow"
+		app:haloColor="@color/highlight_yellow"
+		android:theme="@style/Theme.MaterialComponents"
+		/>
 
-	<SeekBar
+	<!--<com.google.android.material.slider.Slider
 		android:id="@+id/pageSlider"
 		android:layout_width="@dimen/two_forty"
 		android:layout_height="wrap_content"
@@ -190,7 +205,7 @@
 		android:rotation="90"
 		android:layout_marginStart="@dimen/eight_dp"
 		android:layout_marginEnd="-50dp"
-		/>
+		/>-->
 
 	<!--<SeekBar
 		android:id="@+id/pageSliderHorizontal"

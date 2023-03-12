@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Custom.Activity" parent="Theme.MaterialComponents.Light">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/navy_blue</item>
+        <item name="colorPrimaryVariant">@color/navy_blue</item>
+        <item name="colorOnPrimary">@color/highlight_yellow</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/highlight_yellow</item>
+        <item name="colorSecondaryVariant">@color/highlight_yellow</item>
+        <item name="colorOnSecondary">@color/highlight_yellow</item>
+        <!-- Status bar color. -->
+<!--        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>-->
+<!--        <item name="android:navigationBarColor" tools:targetApi="l">@color/yellow_dark</item>-->
+        <!-- Customize your theme here. -->
+        <item name="actionBarTheme">@style/ThemeOverlay.Actionbar</item>
+        <item name="colorAccent">@color/highlight_yellow</item>
+        <item name="android:windowBackground">@color/navy_blue</item>
+    </style>
+
+    <style name="ThemeOverlay.Actionbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
+
+    <style name="Widget.App.Tooltip" parent="Widget.MaterialComponents.Tooltip">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/highlight_yellow</item>
+    </style>
+
+    <!--<style name="custom_action_mode_dark" parent="Widget.Material3.ActionMode">
+        <item name="android:textColor">@color/white</item>
+        <item name="popupMenuBackground">@drawable/popup_background</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>-->
+
+    <style name="Custom.Dialog.Dark" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/background_curved_recents</item>
+        <item name="android:windowMinWidthMinor">85%</item>
+    </style>
+
+    <style name="custom_action_mode_dark" parent="Widget.Material3.ActionMode">
+        <item name="android:textColor">@color/white</item>
+        <item name="popupMenuBackground">@drawable/popup_background</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+</resources>
