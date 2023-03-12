@@ -7,6 +7,7 @@ buildscript {
 		}
 		google()
 		mavenCentral()
+		mavenLocal()
 	}
 	dependencies {
 		classpath 'com.android.tools.build:gradle:7.2.1'
@@ -21,6 +22,7 @@ allprojects {
 			maven { url "file://${System.properties['user.home']}/MAVEN" }
 		}
 		maven { url 'https://maven.ghostscript.com/' }
+		mavenLocal()
 		google()
 		mavenCentral()
 	}
