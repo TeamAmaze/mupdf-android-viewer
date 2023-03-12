@@ -58,7 +58,11 @@ afterEvaluate {
 			}
 		}
 		repositories {
+			gradlePluginPortal()
+			google()
 			mavenLocal()
+			mavenCentral()
+			jcenter()
 			maven { url "https://jitpack.io" }
 		}
 	}
