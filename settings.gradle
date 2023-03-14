@@ -27,7 +27,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "com.artifex.mupdf.viewer"
+rootProject.name = "com.amaze.mupdf.viewer"
 include ':jni'
 include ':lib'
 include ':app'
