@@ -5,6 +5,11 @@ buildscript {
 		mavenLocal()
 		mavenCentral()
 		jcenter()
+
+		maven {
+			url 'http://maven.ghostscript.com'
+			allowInsecureProtocol = true
+		}
 		maven { url "https://jitpack.io" }
 	}
 	dependencies {
@@ -19,6 +24,11 @@ allprojects {
 		mavenLocal()
 		mavenCentral()
 		jcenter()
+
+		maven {
+			url 'http://maven.ghostscript.com'
+			allowInsecureProtocol = true
+		}
 		maven { url "https://jitpack.io" }
 	}
 }

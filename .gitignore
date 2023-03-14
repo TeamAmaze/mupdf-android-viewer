@@ -7,3 +7,5 @@ build
 local.properties
 MAVEN
 tags
+.DS_Store
+app/.DS_Store

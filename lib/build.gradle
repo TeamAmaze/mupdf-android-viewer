@@ -19,18 +19,13 @@ android {
 		minSdkVersion 21
 		targetSdkVersion 31
 	}
-	publishing {
-		singleVariant("release") {
-			withSourcesJar()
-		}
-	}
 }
 
 afterEvaluate {
 	publishing {
 		publications {
 			release(MavenPublication) {
-				from components.release
+//				from components.release
 				pom {
 					groupId = 'com.artifex.mupdf.viewer'
 					artifactId = 'mupdf'
@@ -63,6 +58,10 @@ afterEvaluate {
 			mavenLocal()
 			mavenCentral()
 			jcenter()
+			maven {
+				url 'http://maven.ghostscript.com'
+				allowInsecureProtocol = true
+			}
 			maven { url "https://jitpack.io" }
 		}
 	}
