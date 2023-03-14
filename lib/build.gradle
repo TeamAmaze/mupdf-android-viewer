@@ -54,11 +54,6 @@ afterEvaluate {
 							email = 'vishalmeham2@gmail.com'
 						}
 					}
-					scm {
-						connection = 'scm:git@github.com:TeamAmaze/mupdf-android-viewer.git'
-						developerConnection = 'scm:git@github.com:TeamAmaze/mupdf-android-viewer.git'
-						url = 'https://teamamaze.xyz/'
-					}
 					description = 'Mupdf Android'
 					version = '1.0.0'
 				}
