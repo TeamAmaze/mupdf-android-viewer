@@ -1,34 +1,4 @@
-buildscript {
-	repositories {
-		gradlePluginPortal()
-		google()
-		mavenLocal()
-		mavenCentral()
-		jcenter()
-
-		maven {
-			url 'http://maven.ghostscript.com'
-			allowInsecureProtocol = true
-		}
-		maven { url "https://jitpack.io" }
-	}
-	dependencies {
-		classpath 'com.android.tools.build:gradle:7.2.1'
-	}
-}
-
-allprojects {
-	repositories {
-		gradlePluginPortal()
-		google()
-		mavenLocal()
-		mavenCentral()
-		jcenter()
-
-		maven {
-			url 'http://maven.ghostscript.com'
-			allowInsecureProtocol = true
-		}
-		maven { url "https://jitpack.io" }
-	}
+plugins {
+	id 'com.android.application' version '7.3.1' apply false
+	id 'com.android.library' version '7.3.1' apply false
 }

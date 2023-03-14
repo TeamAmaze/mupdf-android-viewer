@@ -1,3 +1,33 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven {
+            url 'http://maven.ghostscript.com'
+            allowInsecureProtocol = true
+        }
+        maven { url "https://jitpack.io" }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven {
+            url 'http://maven.ghostscript.com'
+            allowInsecureProtocol = true
+        }
+        maven { url "https://jitpack.io" }
+    }
+}
+
+rootProject.name = "com.artifex.mupdf.viewer"
 include ':jni'
 include ':lib'
 include ':app'
