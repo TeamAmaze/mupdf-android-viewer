@@ -38,10 +38,30 @@ afterEvaluate {
 		publications {
 			release(MavenPublication) {
 				from components.release
-				groupId = 'com.artifex.mupdf.viewer'
-				artifactId = 'mupdf'
-				description = 'Mupdf Android'
-				version = '1.0.0'
+				pom {
+					groupId = 'com.artifex.mupdf.viewer'
+					artifactId = 'mupdf'
+					licenses {
+						license {
+							name = 'GNU Affero General Public License'
+							url = 'https://www.gnu.org/licenses/agpl-3.0.html'
+						}
+					}
+					developers {
+						developer {
+							id = 'vishalnehra'
+							name = 'Vishal Nehra'
+							email = 'vishalmeham2@gmail.com'
+						}
+					}
+					scm {
+						connection = 'scm:git@github.com:TeamAmaze/mupdf-android-viewer.git'
+						developerConnection = 'scm:git@github.com:TeamAmaze/mupdf-android-viewer.git'
+						url = 'https://teamamaze.xyz/'
+					}
+					description = 'Mupdf Android'
+					version = '1.0.0'
+				}
 			}
 		}
 	}
