@@ -4,6 +4,10 @@ pluginManagement {
         google()
         mavenLocal()
         jcenter()
+        maven {
+            url 'http://maven.ghostscript.com'
+            allowInsecureProtocol = true
+        }
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
@@ -14,12 +18,16 @@ dependencyResolutionManagement {
         google()
         mavenLocal()
         jcenter()
+        maven {
+            url 'http://maven.ghostscript.com'
+            allowInsecureProtocol = true
+        }
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
 }
 
-rootProject.name = "com.amaze.mupdf.viewer"
+rootProject.name = "com.artifex.mupdf.viewer"
 include ':jni'
 include ':lib'
 include ':app'

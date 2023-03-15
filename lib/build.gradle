@@ -39,7 +39,7 @@ afterEvaluate {
 			release(MavenPublication) {
 				from components.release
 				pom {
-					groupId = 'com.amaze.mupdf.viewer'
+					groupId = 'com.artifex.mupdf.viewer'
 					artifactId = 'mupdf-android-viewer'
 					licenses {
 						license {
