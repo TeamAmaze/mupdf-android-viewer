@@ -1,28 +1,20 @@
 pluginManagement {
     repositories {
-        maven {
-            url 'http://maven.ghostscript.com'
-            allowInsecureProtocol = true
-        }
         gradlePluginPortal()
         google()
         mavenLocal()
-        mavenCentral()
         jcenter()
+        mavenCentral()
         maven { url "https://jitpack.io" }
     }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        maven {
-            url 'http://maven.ghostscript.com'
-            allowInsecureProtocol = true
-        }
         google()
         mavenLocal()
-        mavenCentral()
         jcenter()
+        mavenCentral()
         maven { url "https://jitpack.io" }
     }
 }
