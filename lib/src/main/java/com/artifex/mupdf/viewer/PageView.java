@@ -1,20 +1,9 @@
 package com.artifex.mupdf.viewer;
 
-import com.artifex.mupdf.fitz.Cookie;
-import com.artifex.mupdf.fitz.Link;
-import com.artifex.mupdf.fitz.Quad;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap.Config;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -27,24 +16,25 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
-import android.os.FileUriExposedException;
 import android.os.Handler;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.os.AsyncTask;
+
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.widget.ImageViewCompat;
+
+import com.artifex.mupdf.fitz.Cookie;
+import com.artifex.mupdf.fitz.Link;
+import com.artifex.mupdf.fitz.Quad;
 
 // Make our ImageViews opaque to optimize redraw
-class OpaqueImageView extends ImageView {
+class OpaqueImageView extends AppCompatImageView {
 
 	public OpaqueImageView(Context context) {
 		super(context);
@@ -624,9 +614,6 @@ public class PageView extends ViewGroup {
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET); // API>=21: FLAG_ACTIVITY_NEW_DOCUMENT
 			try {
 				mContext.startActivity(intent);
-			} catch (FileUriExposedException x) {
-				Log.e(APP, x.toString());
-				Toast.makeText(getContext(), "Android does not allow following file:// link: " + link.getURI(), Toast.LENGTH_LONG).show();
 			} catch (Throwable x) {
 				Log.e(APP, x.toString());
 				Toast.makeText(getContext(), x.getMessage(), Toast.LENGTH_LONG).show();

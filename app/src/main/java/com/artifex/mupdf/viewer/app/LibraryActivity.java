@@ -2,12 +2,8 @@ package com.artifex.mupdf.viewer.app;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
-import android.util.Log;
-
-import com.artifex.mupdf.fitz.Document; /* for file name recognition */
 import com.artifex.mupdf.viewer.DocumentActivity;
 
 public class LibraryActivity extends Activity
