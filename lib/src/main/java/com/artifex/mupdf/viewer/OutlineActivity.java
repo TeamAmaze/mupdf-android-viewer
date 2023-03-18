@@ -32,7 +32,7 @@ public class OutlineActivity extends ListActivity
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_list_item_1);
+		adapter = new ArrayAdapter<>(this, R.layout.simple_list_item);
 		setListAdapter(adapter);
 
 		int idx = getIntent().getIntExtra("PALLETBUNDLE", -1);

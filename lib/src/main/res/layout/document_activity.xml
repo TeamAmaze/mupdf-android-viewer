@@ -184,6 +184,7 @@
 		android:rotation="90"
 		android:layout_marginStart="@dimen/eight_dp"
 		android:layout_marginEnd="-70dp"
+		android:scaleY="-1"
 		android:tooltipText="@null"
 		app:labelStyle="@style/Widget.App.Tooltip"
 		app:trackColor="@color/highlight_yellow"
