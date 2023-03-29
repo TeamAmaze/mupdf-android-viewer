@@ -11,7 +11,7 @@
 			android:exported="true"
 			android:label="@string/document_activity"
 			>
-			<intent-filter>
+			<intent-filter android:label="@string/document_activity">
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.BROWSABLE" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -29,6 +29,20 @@
 					android:scheme="content" />
 				<data android:mimeType="application/octet-stream"
 					android:scheme="file" />
+			</intent-filter>
+
+			<intent-filter android:label="@string/document_activity">
+				<action android:name="android.intent.action.SEND" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<!-- list the mime-types we know about -->
+				<data android:mimeType="application/pdf" />
+				<data android:mimeType="application/vnd.ms-xpsdocument" />
+				<data android:mimeType="application/oxps" />
+				<data android:mimeType="application/vnd.comicbook+zip" />
+				<data android:mimeType="application/x-cbz" />
+				<data android:mimeType="application/epub+zip" />
+				<data android:mimeType="application/x-fictionbook" />
+				<data android:mimeType="application/x-mobipocket-ebook" />
 			</intent-filter>
 		</activity>
 		<activity

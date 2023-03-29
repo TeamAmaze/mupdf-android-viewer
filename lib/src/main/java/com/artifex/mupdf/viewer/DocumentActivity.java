@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -179,12 +177,7 @@ public class DocumentActivity extends Activity
 		Resources res = getResources();
 		AlertDialog alert = mAlertBuilder.create();
 		setTitle(String.format(Locale.ROOT, res.getString(R.string.cannot_open_document_Reason), reason));
-		alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dismiss),
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						finish();
-					}
-				});
+		alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dismiss), (dialog, which) -> finish());
 		alert.show();
 	}
 
@@ -214,10 +207,13 @@ public class DocumentActivity extends Activity
 
 			mReturnToLibraryActivity = intent.getIntExtra(getComponentName().getPackageName() + ".ReturnToLibraryActivity", 0) != 0;
 
-			if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+			if (Intent.ACTION_VIEW.equals(intent.getAction())
+					|| Intent.ACTION_SEND.equals(intent.getAction())) {
 				Uri uri = intent.getData();
 				String mimetype = getIntent().getType();
-
+				if (uri == null) {
+					uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+				}
 				if (uri == null)  {
 					showCannotOpenDialog("No document uri to open");
 					return;
@@ -289,18 +285,8 @@ public class DocumentActivity extends Activity
 		{
 			AlertDialog alert = mAlertBuilder.create();
 			alert.setTitle(R.string.cannot_open_document);
-			alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dismiss),
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							finish();
-						}
-					});
-			alert.setOnCancelListener(new OnCancelListener() {
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					finish();
-				}
-			});
+			alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dismiss), (dialog, which) -> finish());
+			alert.setOnCancelListener(dialog -> finish());
 			alert.show();
 			return;
 		}
@@ -317,22 +303,14 @@ public class DocumentActivity extends Activity
 		alert.setTitle(R.string.enter_password);
 		alert.setView(mPasswordView);
 		alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.okay),
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						if (core.authenticatePassword(mPasswordView.getText().toString())) {
-							createUI(savedInstanceState);
-						} else {
-							requestPassword(savedInstanceState);
-						}
+				(dialog, which) -> {
+					if (core.authenticatePassword(mPasswordView.getText().toString())) {
+						createUI(savedInstanceState);
+					} else {
+						requestPassword(savedInstanceState);
 					}
 				});
-		alert.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel),
-				new DialogInterface.OnClickListener() {
-
-			public void onClick(DialogInterface dialog, int which) {
-				finish();
-			}
-		});
+		alert.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel), (dialog, which) -> finish());
 		alert.show();
 	}
 
