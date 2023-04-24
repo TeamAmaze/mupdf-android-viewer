@@ -28,6 +28,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "com.artifex.mupdf.viewer"
-include ':jni'
+include ':mupdf-android-fitz'
 include ':lib'
 include ':app'
