@@ -28,4 +28,11 @@
 	<string name="creation_date">Creation Date</string>
 	<string name="modified_date">Modified Date</string>
 	<string name="keywords">Keywords</string>
+	<string name="share">Share</string>
+	<string name="bluetooth">Bluetooth</string>
+	<string name="set_as">Set as..</string>
+	<string name="no_results_subtitles">No results, please try with different keywords…</string>
+	<string name="no_apps_found_to_share">No apps found to share</string>
+	<string name="edit">Edit</string>
+
 </resources>

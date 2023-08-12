@@ -3,6 +3,8 @@
 	package="com.artifex.mupdf.viewer"
 	>
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
 	<application
 		android:theme="@style/Theme.Custom.Activity">
 		<activity

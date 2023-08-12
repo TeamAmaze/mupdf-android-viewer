@@ -8,4 +8,7 @@
     <dimen name="files_tab_heights">180dp</dimen>
     <dimen name="two_forty">240dp</dimen>
     <dimen name="twenty_four_dp">24dp</dimen>
+    <dimen name="minimal_row_size">72dp</dimen>
+    <dimen name="fourty_eight_dp">48dp</dimen>
+    <dimen name="eighteen_sp">18sp</dimen>
 </resources>

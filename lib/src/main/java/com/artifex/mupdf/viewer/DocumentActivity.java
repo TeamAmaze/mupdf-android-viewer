@@ -40,15 +40,21 @@ import android.widget.ViewAnimator;
 import androidx.annotation.NonNull;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.artifex.mupdf.fitz.SeekableInputStream;
+import com.artifex.mupdf.viewer.share.ShareAdapter;
+import com.artifex.mupdf.viewer.share.ShareUtilsKt;
 import com.google.android.material.slider.Slider;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
 public class DocumentActivity extends Activity
 {
@@ -90,6 +96,7 @@ public class DocumentActivity extends Activity
 	private AlertDialog mAlertDialog;
 	private ArrayList<OutlineActivity.Item> mFlatOutline;
 	private boolean mReturnToLibraryActivity = false;
+	private Uri intentUri;
 
 	protected int mDisplayDPI;
 	private int mLayoutEM = 10;
@@ -210,6 +217,7 @@ public class DocumentActivity extends Activity
 			if (Intent.ACTION_VIEW.equals(intent.getAction())
 					|| Intent.ACTION_SEND.equals(intent.getAction())) {
 				Uri uri = intent.getData();
+				this.intentUri = uri;
 				String mimetype = getIntent().getType();
 				if (uri == null) {
 					uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
@@ -830,6 +838,15 @@ public class DocumentActivity extends Activity
 				item.setChecked(mLinkHighlight);
 			} else if (item.getItemId() == R.id.text_size) {
 				mLayoutPopupMenu.show();
+			} else if (item.getItemId() == R.id.share) {
+				if (intentUri != null) {
+					List<Uri> intentUriList = new ArrayList<>();
+					intentUriList.add(intentUri);
+					ShareAdapter shareAdapter = ShareUtilsKt.getShareIntents(intentUriList,
+							this);
+					ShareUtilsKt.showShareDialog(this, getLayoutInflater(), shareAdapter);
+				}
+
 			}
 			return true;
 		});

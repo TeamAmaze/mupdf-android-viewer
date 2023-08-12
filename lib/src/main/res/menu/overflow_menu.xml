@@ -9,6 +9,10 @@
         android:title="@string/outline"
         />
     <item
+        android:id="@+id/share"
+        android:title="@string/share"
+        />
+    <item
         android:id="@+id/text_size"
         android:title="@string/text_size"
         android:visible="false"
