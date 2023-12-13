@@ -369,7 +369,8 @@ public class DocumentActivity extends Activity
 
 			@Override
 			public void onSizeChanged(int w, int h, int oldw, int oldh) {
-				if (core.isReflowable()) {
+				SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
+				if (core.isReflowable() && prefs.getInt("page"+mDocKey, 0) == 0) {
 					mLayoutW = w * 72 / mDisplayDPI;
 					mLayoutH = h * 72 / mDisplayDPI;
 					relayoutDocument();
