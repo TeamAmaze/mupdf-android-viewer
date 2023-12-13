@@ -95,7 +95,7 @@ public class DocumentActivity extends Activity
 	private boolean mAlertsActive= false;
 	private AlertDialog mAlertDialog;
 	private ArrayList<OutlineActivity.Item> mFlatOutline;
-	private boolean mReturnToLibraryActivity = false;
+	private boolean mReturnToLibraryActivity = true;
 	private Uri intentUri;
 
 	protected int mDisplayDPI;
@@ -212,7 +212,7 @@ public class DocumentActivity extends Activity
 			Intent intent = getIntent();
 			SeekableInputStream file;
 
-			mReturnToLibraryActivity = intent.getIntExtra(getComponentName().getPackageName() + ".ReturnToLibraryActivity", 0) != 0;
+//			mReturnToLibraryActivity = intent.getIntExtra(getComponentName().getPackageName() + ".ReturnToLibraryActivity", 0) != 0;
 
 			if (Intent.ACTION_VIEW.equals(intent.getAction())
 					|| Intent.ACTION_SEND.equals(intent.getAction())) {
